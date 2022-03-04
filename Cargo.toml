@@ -1,0 +1,25 @@
+[package]
+name = "mince"
+version = "0.1.0"
+edition = "2021"
+
+[lib]
+crate-type = ["cdylib"]
+
+# Todo: native lib
+
+[dependencies]
+region = "3.0.0"
+module_maps = { path = "module_maps", features = ["expose_native_module_types"]}
+
+[target.'cfg(target_os = "windows")'.dependencies.windows]
+version = "0.33"
+features = [
+    "Win32_Foundation",
+    "Win32_System_LibraryLoader",
+    "Win32_System_SystemServices",
+
+    # MessageBox + literal strings
+    "alloc",
+    "Win32_UI_WindowsAndMessaging",
+]

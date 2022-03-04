@@ -1,0 +1,15 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "lldb",
+            "request": "attach",
+            "name": "Attach to hl2.exe",
+            "program": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\Counter-Strike Source\\hl2.exe"
+            // "pid": "${command:pickMyProcess}" // use ${command:pickProcess} to pick other users' processes
+        }
+    ]
+}
