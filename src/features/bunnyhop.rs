@@ -1,26 +1,41 @@
 use std::time::{Duration, Instant};
 
-use crate::ModuleName;
-
 use module_maps::{find_module, ModuleMapping};
 
+use crate::ModuleName::Client;
+
 pub struct Bunnyhop {
-    on_ground: *mut u32,
-    do_jump: *mut u32
+    on_ground: *mut u8,
+    do_jump: *mut u8
 }
 
 impl Bunnyhop {   
     pub fn new() -> Self {
-        let by_file_name = |mapping: &ModuleMapping| mapping.file_name == ModuleName::Client.file_name();
-        let client = find_module(by_file_name)
+        let is_client = |mapping: &ModuleMapping| {
+            mapping.file_name == Client.file_name()
+        };
+        let client = find_module(is_client)
             .expect("module iteration failed")
             .expect("client module not found");
 
-        let on_ground = unsafe { client.base.offset(0x4F82AC) };
-        let do_jump = unsafe { client.base.offset(0x4F5D24) };
-
-        let on_ground = on_ground as _;
-        let do_jump = do_jump as _;
+        
+        let on_ground;
+        let do_jump;
+        unsafe {
+            on_ground = client.base.offset(
+                #[cfg(target_os="windows")]
+                0x4F82AC,
+                #[cfg(target_os="linux")]
+                0xB9E7AC,
+            );
+            
+            do_jump = client.base.offset(
+                #[cfg(target_os="windows")]
+                0x4F5D24,
+                #[cfg(target_os="linux")]
+                0xBEE4E8,
+            );
+        }
 
         Self { on_ground, do_jump }
     }

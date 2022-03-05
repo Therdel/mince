@@ -99,7 +99,7 @@ fn get_module_file_name(module: &MODULEENTRY32) -> String {
 fn native_module_to_mapping(module: MODULEENTRY32) -> ModuleMapping {
     ModuleMapping {
         base: module.modBaseAddr,
-        byte_length: module.modBaseSize as usize,
+        // byte_length: module.modBaseSize as usize,
         file_name: get_module_file_name(&module),
         
         #[cfg(feature = "expose_native_module_types")]

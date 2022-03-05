@@ -9,8 +9,12 @@ crate-type = ["cdylib"]
 # Todo: native lib
 
 [dependencies]
-region = "3.0.0"
+native-dialog = "0.6.3"
 module_maps = { path = "module_maps", features = ["expose_native_module_types"]}
+region = "3.0.0"
+
+[target.'cfg(target_os = "windows")'.dependencies]
+once_cell = "1.10.0"
 
 [target.'cfg(target_os = "windows")'.dependencies.windows]
 version = "0.33"
@@ -23,3 +27,5 @@ features = [
     "alloc",
     "Win32_UI_WindowsAndMessaging",
 ]
+
+[target.'cfg(target_os = "linux")'.dependencies]

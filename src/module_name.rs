@@ -5,7 +5,10 @@ pub enum ModuleName {
 impl ModuleName {
     pub fn file_name(&self) -> &'static str {
         match self {
-            ModuleName::Client => "client.dll"
+            #[cfg(target_os="windows")]
+            ModuleName::Client => "client.dll",
+            #[cfg(target_os="linux")]
+            ModuleName::Client => "client.so"
         }
     }
 }

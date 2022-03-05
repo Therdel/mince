@@ -3,7 +3,7 @@ pub mod error;
 
 pub struct ModuleMapping {
     pub base: *mut u8,
-    pub byte_length: usize,
+    // pub byte_length: usize,
     pub file_name: String,
 
     #[cfg(feature = "expose_native_module_types")]

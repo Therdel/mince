@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CheatTable CheatEngineTableVersion="38">
+  <CheatEntries>
+    <CheatEntry>
+      <ID>2</ID>
+      <Description>"client on_ground"</Description>
+      <VariableType>4 Bytes</VariableType>
+      <Address>client.so+B9E650</Address>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>3</ID>
+      <Description>"client on_ground"</Description>
+      <VariableType>4 Bytes</VariableType>
+      <Address>client.so+B9E7AC</Address>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>4</ID>
+      <Description>"client do_jump"</Description>
+      <ShowAsSigned>0</ShowAsSigned>
+      <VariableType>4 Bytes</VariableType>
+      <Address>client.so+BEE4E8</Address>
+    </CheatEntry>
+  </CheatEntries>
+  <UserdefinedSymbols/>
+</CheatTable>
