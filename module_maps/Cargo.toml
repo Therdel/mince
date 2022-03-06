@@ -6,8 +6,6 @@ edition = "2021"
 [lib]
 # crate-type = ["rlib"]
 
-# Todo: native lib
-
 [dependencies]
 thiserror = "1.0.30"
 

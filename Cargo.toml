@@ -6,8 +6,6 @@ edition = "2021"
 [lib]
 crate-type = ["cdylib"]
 
-# Todo: native lib
-
 [dependencies]
 native-dialog = "0.6.3"
 module_maps = { path = "module_maps", features = ["expose_native_module_types"]}
@@ -27,5 +25,3 @@ features = [
     "alloc",
     "Win32_UI_WindowsAndMessaging",
 ]
-
-[target.'cfg(target_os = "linux")'.dependencies]
