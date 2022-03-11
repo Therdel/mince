@@ -1,3 +1,3 @@
 #!/usr/bin/env bash
-./eject.bash
-./inject.bash
+./eject_linux.bash
+./inject_linux.bash
