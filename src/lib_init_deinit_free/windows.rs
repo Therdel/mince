@@ -5,7 +5,6 @@ use windows::{
     Win32::{System::SystemServices::{DLL_PROCESS_ATTACH, DLL_PROCESS_DETACH}},
 };
 use once_cell::sync::OnceCell;
-use crate::gui::message_box;
 
 static H_MODULE: OnceCell<HMODULE> = OnceCell::new();
 
@@ -17,23 +16,24 @@ type BOOL = c_int;
 #[no_mangle]
 extern "stdcall" fn DllMain(h_module: HMODULE,
                             ul_reason_for_call: DWORD,
-                            lp_reserved: LPVOID) -> BOOL {
+                            _lp_reserved: LPVOID) -> BOOL {
     match ul_reason_for_call {
         DLL_PROCESS_ATTACH => {
-            // SAFETY: Cannot fail, as process attach happens only once
-            H_MODULE.set(h_module).unwrap();
-            unsafe { DisableThreadLibraryCalls(h_module); }
-            crate::initialize();
-        },
+            let native_init = || {
+                // SAFETY: Cannot fail, as process attach happens only once
+                H_MODULE.set(h_module).unwrap();
+                unsafe { DisableThreadLibraryCalls(h_module); }
+            };
+            super::initialize_hook(native_init);
+        }
         DLL_PROCESS_DETACH => {
-            if lp_reserved.is_null() {
-                // reason: FreeLibrary was called
-                message_box::info("Detach: FreeLibrary");
-            } else {
-                // reason: Process is terminating
-                message_box::info("Detach: Process terminating");
-            }
-            crate::deinitialize();
+            // if lp_reserved.is_null() {
+            //     // reason: FreeLibrary was called
+            // } else {
+            //     // reason: Process is terminating
+            // }
+            let native_deinit = || {};
+            super::deinitialize_hook(native_deinit);
         }
         _ => {}
     }
@@ -41,7 +41,7 @@ extern "stdcall" fn DllMain(h_module: HMODULE,
     true as BOOL
 }
 
-pub fn exit() -> ! {
+pub fn free_library() -> ! {
     // SAFETY: Always initialized, as exit can only be called after or within initialize,
     //         which sets H_MODULE first thing.
     let h_module = H_MODULE.get().unwrap();
