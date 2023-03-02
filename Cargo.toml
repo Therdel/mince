@@ -8,6 +8,7 @@ crate-type = ["cdylib"]
 
 [dependencies]
 module_maps = { path = "module_maps", features = ["expose_native_module_types"]}
+keystone = { path = "lib/keystone/bindings/rust" }
 region = "3.0.0"
 
 [target.'cfg(target_os = "windows")'.dependencies]
