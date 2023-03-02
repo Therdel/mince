@@ -5,18 +5,10 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "type": "lldb",
+            "name": "Attach",
             "request": "attach",
-            "name": "[Windows] Attach to hl2.exe",
-            "program": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\Counter-Strike Source\\hl2.exe"
-            // "pid": "${command:pickMyProcess}" // use ${command:pickProcess} to pick other users' processes
-        },
-        {
+            "program": "hl2.exe",
             "type": "lldb",
-            "request": "attach",
-            "name": "[Linux] Attach to hl2_linux",
-            "program": "~/.local/share/Steam/steamapps/common/Counter-Strike Source/hl2_linux"
-            // "pid": "${command:pickMyProcess}" // use ${command:pickProcess} to pick other users' processes
         }
     ]
 }
