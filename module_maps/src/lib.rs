@@ -1,20 +1,20 @@
 mod native;
 pub mod error;
+use error::Result;
 
 pub struct ModuleMapping {
-    pub base: *mut u8,
-    // pub byte_length: usize,
+    pub memory: *const [u8],
     pub file_name: String,
 
     #[cfg(feature = "expose_native_module_types")]
     pub native_module: native::NativeModuleMapping
 }
 
-fn iterate_mappings() -> error::Result<impl Iterator<Item=ModuleMapping>> {
+fn iterate_mappings() -> Result<impl Iterator<Item=ModuleMapping>> {
     native::iterate_mappings()
 }
 
-pub fn find_module<P>(predicate: P) -> error::Result<Option<ModuleMapping>>
+pub fn find_module<P>(predicate: P) -> Result<Option<ModuleMapping>>
 where P: Fn(&ModuleMapping)->bool {
     let module = iterate_mappings()?
         .find(predicate);

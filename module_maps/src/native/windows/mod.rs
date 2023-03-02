@@ -97,9 +97,9 @@ fn get_module_file_name(module: &MODULEENTRY32) -> String {
 }
 
 fn native_module_to_mapping(module: MODULEENTRY32) -> ModuleMapping {
+    let memory = unsafe { std::slice::from_raw_parts(module.modBaseAddr, module.modBaseSize as usize) };
     ModuleMapping {
-        base: module.modBaseAddr,
-        // byte_length: module.modBaseSize as usize,
+        memory: memory as _,
         file_name: get_module_file_name(&module),
         
         #[cfg(feature = "expose_native_module_types")]

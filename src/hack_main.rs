@@ -1,65 +1,37 @@
+use std::{ thread, time::Duration };
+
+use anyhow::Result;
+
 use crate::features::Bunnyhop;
 use crate::gui;
 use crate::StopToken;
-use std::{
-    sync::{
-        atomic::{AtomicBool, Ordering},
-        Arc,
-    },
-    thread,
-    time::Duration,
-};
+use crate::memory::{MemVars, detour::DetourOrder, hooks::OnGroundHook};
+use crate::menu::*;
 
-#[derive(PartialEq, Clone, Copy)]
-enum Command {
-    Bhop = 0,
-    NoBhop = 1,
-}
-
-#[derive(Default, Clone)]
-struct SharedCommand {
-    command: Arc<AtomicBool>,
-}
-
-impl SharedCommand {
-    fn get(&self) -> Command {
-        match self.command.load(Ordering::SeqCst) {
-            true => Command::Bhop,
-            false => Command::NoBhop,
-        }
-    }
-
-    fn set(&self, command: Command) {
-        self.command.store(command as isize == 0, Ordering::SeqCst)
-    }
-}
-
-fn menu(stop_token: StopToken, command: SharedCommand) {
+fn run(stop_token: StopToken) -> Result<()> {
+    let menu = Menu::new(stop_token.clone());
+    let mem_vars = MemVars::read()?;
+    let mut bhop = Bunnyhop::new(&mem_vars);
+    // TODO: Fix unsafe passing to another thread / hook thread
+    // TODO: Fix ownership problem
+    //          - OnGroundHook should hold the instance alive rc/arc, or hold a reference
+    //          - If using rc/arc: Solve deref problem, Solve mutex/refcell problem
+    let _on_ground_hook = OnGroundHook::install(&mem_vars, &bhop, DetourOrder::DetourAfter);
+    
+    let poll_sleep = Duration::from_millis(100);
     while !stop_token.stop_requested() {
-        let answer = gui::message_box::yes_no("yes: toggle bhop\nno: leave");
-        match answer {
-            true => match command.get() {
-                Command::Bhop => command.set(Command::NoBhop),
-                Command::NoBhop => command.set(Command::Bhop),
-            },
-            false => stop_token.request_stop(),
+        match menu.poll_command() {
+            Command::Bhop => bhop.set_active(true),
+            Command::NoBhop => bhop.set_active(false)
         }
+        thread::sleep(poll_sleep);
     }
+    
+    Ok(())
 }
 
 pub fn hack_main(stop_token: StopToken) {
-    let command = SharedCommand::default();
-    let (stop_clone, command_clone) = (stop_token.clone(), command.clone());
-    let menu_thread = thread::spawn(|| menu(stop_clone, command_clone));
-
-    let loop_duration = Duration::from_millis(100);
-    let bhop = Bunnyhop::new();
-    while !stop_token.stop_requested() {
-        match command.get() {
-            Command::Bhop => bhop.auto_jump(loop_duration),
-            Command::NoBhop => thread::sleep(loop_duration),
-        }
+    if let Err(err) = run(stop_token) {
+        gui::message_box::warn(&err.to_string());
     }
-
-    menu_thread.join().unwrap();
 }

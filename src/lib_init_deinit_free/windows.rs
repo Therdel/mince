@@ -8,9 +8,13 @@ use once_cell::sync::OnceCell;
 
 static H_MODULE: OnceCell<HMODULE> = OnceCell::new();
 
+#[allow(clippy::upper_case_acronyms)]
 type HMODULE = HINSTANCE;
+#[allow(clippy::upper_case_acronyms)]
 type DWORD = c_ulong;
+#[allow(clippy::upper_case_acronyms)]
 type LPVOID = *mut c_void;
+#[allow(clippy::upper_case_acronyms)]
 type BOOL = c_int;
 
 #[no_mangle]

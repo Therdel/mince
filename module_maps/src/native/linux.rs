@@ -60,9 +60,12 @@ fn get_module_file_name(module: &dl_phdr_info) -> String {
 
 fn native_module_to_mapping(module: &dl_phdr_info) -> ModuleMapping {
     let base_addr = (*module).dlpi_addr;
-    let base = base_addr as *mut u8;
+    let base = base_addr as *const u8;
+    let size = todo!();
+    let memory = unsafe { std::slice::from_raw_parts(base, size) };
+    
     let mapping = ModuleMapping {
-        base,
+        memory: memory as _,
         file_name: get_module_file_name(module),
         #[cfg(feature = "expose_native_module_types")]
         native_module: module.clone()

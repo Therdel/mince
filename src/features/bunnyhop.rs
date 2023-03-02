@@ -1,54 +1,37 @@
-use std::time::{Duration, Instant};
-
-use module_maps::{find_module, ModuleMapping};
-
-use crate::ModuleName::Client;
+use crate::memory::{MemVars, hooks::OnGroundHandler};
 
 pub struct Bunnyhop {
+    is_active: bool,
     on_ground: *mut u8,
-    do_jump: *mut u8
+    do_jump: *mut u8,
 }
 
-impl Bunnyhop {   
-    pub fn new() -> Self {
-        let is_client = |mapping: &ModuleMapping| {
-            mapping.file_name == Client.file_name()
-        };
-        let client = find_module(is_client)
-            .expect("module iteration failed")
-            .expect("client module not found");
-
-        
-        let on_ground;
-        let do_jump;
-        unsafe {
-            on_ground = client.base.offset(
-                #[cfg(target_os="windows")]
-                0x4F82AC,
-                #[cfg(target_os="linux")]
-                0xB9E7AC,
-            );
-            
-            do_jump = client.base.offset(
-                #[cfg(target_os="windows")]
-                0x4F5D24,
-                #[cfg(target_os="linux")]
-                0xBEE4E8,
-            );
+impl Bunnyhop {
+    pub fn new(mem_vars: &MemVars) -> Self {
+        Self {
+            is_active: false,
+            on_ground: mem_vars.on_ground as _,
+            do_jump: mem_vars.do_jump as _,
         }
-
-        Self { on_ground, do_jump }
     }
 
-    pub fn auto_jump(&self, duration: Duration) {
-        let begin = Instant::now();
-        while Instant::now() < begin + duration {
+    pub fn set_active(&mut self, is_active: bool) {
+        self.is_active = is_active;
+        if is_active {
+            // the fake jumps are only triggered by landing on the ground, not while being on ground
+            // so if we're currently standing on the ground...
             if self.is_on_ground() {
-                unsafe { *self.do_jump = 5; }
-            } else {
-                unsafe { *self.do_jump = 4; }
+                // we're manually faking the first jump
+                unsafe {
+                    *self.do_jump = 5;
+                }
             }
-            std::thread::sleep(Duration::from_millis(5));
+        } else {
+            // prevent bhop not starting
+            // when jump key is down when you land on the ground and bhop is enabled
+            unsafe {
+                *self.do_jump = 4;
+            }
         }
     }
 
@@ -56,6 +39,20 @@ impl Bunnyhop {
         unsafe {
             let in_air = *self.on_ground == 0;
             !in_air
+        }
+    }
+}
+
+impl OnGroundHandler for Bunnyhop {
+    fn on_ground_land(&self) {
+        if self.is_active {
+            unsafe { *self.do_jump = 5; }
+        }
+    }
+    
+    fn on_ground_leave(&self) {
+        if self.is_active {
+            unsafe { *self.do_jump = 4; }
         }
     }
 }
