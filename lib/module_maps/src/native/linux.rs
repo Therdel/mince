@@ -1,13 +1,10 @@
 use std::ffi::{CStr, OsStr};
 use std::os::unix::prelude::OsStrExt;
 use std::path::Path;
+use anyhow::Result;
 use libc::{dl_iterate_phdr, dl_phdr_info, size_t, c_void};
 
 use crate::ModuleMapping;
-use crate::error::Result;
-
-#[cfg(feature = "expose_native_module_types")]
-pub type NativeModuleMapping = dl_phdr_info;
 
 struct Snapshot {
     mappings: Vec<ModuleMapping>

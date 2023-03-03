@@ -1,6 +1,7 @@
 use std::{collections::HashMap, ops::Range};
 
 use anyhow::{anyhow, Result, Context};
+use region::Region;
 
 use crate::ModuleName;
 
@@ -173,20 +174,21 @@ impl SignatureScanner {
         let Some(signature) = signatures.signatures.get(signature_name) else {
             return Err(anyhow!("Signature {} not found", signature_name))
         };
-        
-        // get module region
-        let module_mapping = module_maps::find_module(|mapping| mapping.file_name == signature.module.file_name())?;
-        let module_mapping = module_mapping
+        let module = module_maps::find_module(|module| module.file_name() == signature.module.file_name())?
             .context(anyhow!("Module {} not found in memory maps", signature.module.file_name()))?;
-        let region = unsafe { &*module_mapping.memory };
 
-        // search module for signature using regex
-        let matches: Vec<_> = signature.regex.captures_iter(region).collect();
-        if matches.len() != 1 {
-            return Err(anyhow!("Signature {signature_name} had {} matches", matches.len()))
-        }
-        let regex_match = matches.first().unwrap();
-    
+        // search executable module regions for signature using regex
+        let matches: Vec<regex::bytes::Captures> = module.regions_snapshot()
+            .filter(Region::is_executable)
+            .flat_map(|region| {
+                let region_slice: &[u8] = unsafe { std::slice::from_raw_parts(region.as_ptr(), region.len()) };
+                signature.regex.captures_iter(region_slice)
+            })
+            .collect();
+        let [regex_match] = matches.as_slice() else {
+            return Err(anyhow!("Signature {signature_name} didn't match once but {} times", matches.len()))
+        };
+        
         // extract match area of interest
         let match_area_of_interest = match &signature_area.area {
             SignatureAreaType::CaptureGroupIndex(capture_index) => {

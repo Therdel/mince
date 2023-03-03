@@ -133,7 +133,8 @@ impl DetourToMethod {
     }
 
     fn assemble_relative_jump(keystone: &Keystone, address_jmp_instruction: u32, address_target: u32) -> Result<Vec<u8>> {
-        let jmp_code = keystone.asm(format!("jmp {address_target:#x}"), address_jmp_instruction as _)
+        let asm = format!("jmp {address_target:#x}");
+        let jmp_code = keystone.asm(asm, address_jmp_instruction as _)
             .map_err(|err| anyhow!("Could not assemble jmp: {err}"))?
             .bytes;
 
