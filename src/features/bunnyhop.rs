@@ -2,16 +2,14 @@ use crate::memory::{MemVars, hooks::OnGroundHandler};
 
 pub struct Bunnyhop {
     is_active: bool,
-    on_ground: *mut u8,
-    do_jump: *mut u8,
+    mem_vars: MemVars,
 }
 
 impl Bunnyhop {
     pub fn new(mem_vars: &MemVars) -> Self {
         Self {
             is_active: false,
-            on_ground: mem_vars.on_ground as _,
-            do_jump: mem_vars.do_jump as _,
+            mem_vars: *mem_vars
         }
     }
 
@@ -22,37 +20,31 @@ impl Bunnyhop {
             // so if we're currently standing on the ground...
             if self.is_on_ground() {
                 // we're manually faking the first jump
-                unsafe {
-                    *self.do_jump = 5;
-                }
+                *self.mem_vars.do_jump() = 5;
             }
         } else {
             // prevent bhop not starting
             // when jump key is down when you land on the ground and bhop is enabled
-            unsafe {
-                *self.do_jump = 4;
-            }
+            *self.mem_vars.do_jump() = 4;
         }
     }
 
     fn is_on_ground(&self) -> bool {
-        unsafe {
-            let in_air = *self.on_ground == 0;
-            !in_air
-        }
+        let in_air = *self.mem_vars.on_ground() == 0;
+        !in_air
     }
 }
 
 impl OnGroundHandler for Bunnyhop {
     fn on_ground_land(&self) {
         if self.is_active {
-            unsafe { *self.do_jump = 5; }
+            *self.mem_vars.do_jump() = 5;
         }
     }
     
     fn on_ground_leave(&self) {
         if self.is_active {
-            unsafe { *self.do_jump = 4; }
+            *self.mem_vars.do_jump() = 4;
         }
     }
 }

@@ -1,6 +1,7 @@
 #[derive(Clone, Copy)]
 pub enum ModuleName {
-    Client
+    Client,
+    Engine,
 }
 
 impl ModuleName {
@@ -9,7 +10,11 @@ impl ModuleName {
             #[cfg(target_os="windows")]
             ModuleName::Client => "client.dll",
             #[cfg(target_os="linux")]
-            ModuleName::Client => "client.so"
+            ModuleName::Client => "client.so",
+            #[cfg(target_os="windows")]
+            ModuleName::Engine => "engine.dll",
+            #[cfg(target_os="linux")]
+            ModuleName::Engine => "engine.so",
         }
     }
 }

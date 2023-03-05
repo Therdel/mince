@@ -14,9 +14,9 @@ impl OnGroundHook {
         let on_ground_leave = T::on_ground_leave;
         unsafe {
             let detour_on_ground_op_dec =
-                DetourToMethod::install(mem_vars.on_ground_op_dec, instance, on_ground_leave, order)?;
+                DetourToMethod::install(mem_vars.on_ground_op_dec(), instance, on_ground_leave, order)?;
             let detour_on_ground_op_inc =
-                DetourToMethod::install(mem_vars.on_ground_op_inc, instance, on_ground_land, order)?;
+                DetourToMethod::install(mem_vars.on_ground_op_inc(), instance, on_ground_land, order)?;
             Ok(Self {
                 detour_on_ground_op_dec,
                 detour_on_ground_op_inc,

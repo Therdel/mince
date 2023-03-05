@@ -4,50 +4,9 @@ use anyhow::{anyhow, Result, Context};
 use region::Region;
 
 use crate::ModuleName;
-
-pub struct MemVars {
-    pub on_ground_op_dec:   *mut [u8],
-    pub on_ground_op_inc:   *mut [u8],
-    pub on_ground:          *mut u8,
-    pub do_jump:            *mut u8,
-}
-
-impl MemVars {
-    pub fn read() -> Result<Self> {
-        let signatures = Signatures::new()?;
-        let signature_areas = SignatureAreas::new(&signatures)?;
-
-        let get_signature_area = |signature_area_name: &str| {
-            signature_areas.areas.get(signature_area_name)
-                .context(anyhow!("Signature area {signature_area_name} not found"))
-        };
-
-        let read_mut_pointer = |signature_area_name: &str| -> Result<*mut u8> {
-            let signature_area = get_signature_area(signature_area_name)?;
-            let scan_result = SignatureScanner::scan_signature(signature_area, &signatures)?;
-            let scan_result: &[u8] = unsafe { &*scan_result};
-            let pointer = usize::from_le_bytes(scan_result.try_into()?);
-            Ok(pointer as *mut u8)
-        };
-
-        let read_mut_slice = |signature_area_name: &str| -> Result<*mut [u8]> {
-            let signature_area = get_signature_area(signature_area_name)?;
-            let slice = SignatureScanner::scan_signature(signature_area, &signatures)?;
-            Ok(slice as *mut[u8])
-        };
-        
-        let mem_vars = MemVars {
-            on_ground_op_dec: read_mut_slice("on_ground_op_dec")?,
-            on_ground_op_inc: read_mut_slice("on_ground_op_inc")?,
-            on_ground: read_mut_pointer("on_ground")?,
-            do_jump: read_mut_pointer("do_jump")?,
-        };
-        Ok(mem_vars)
-    }
-}
     
 pub struct SignatureAreas {
-    areas: HashMap<String, SignatureArea>,
+    pub areas: HashMap<String, SignatureArea>,
 }
 
 impl SignatureAreas {
@@ -58,6 +17,11 @@ impl SignatureAreas {
             ("on_ground_op_inc".into(), SignatureArea::new("on_ground_inc".into(), SignatureAreaType::Range(0..6))),
             ("on_ground".into(),        SignatureArea::new("on_ground_dec".into(), SignatureAreaType::CaptureGroupIndex(1))),
             ("do_jump".into(),          SignatureArea::new("do_jump_update".into(), SignatureAreaType::CaptureGroupIndex(1))),
+            ("do_attack_1".into(),      SignatureArea::new("do_attack_1_read".into(), SignatureAreaType::CaptureGroupIndex(1))),
+            ("angles_x_op_read".into(), SignatureArea::new("angles_x_read".into(), SignatureAreaType::Range(0..8))),
+            ("angles".into(),           SignatureArea::new("angles_x_read".into(), SignatureAreaType::CaptureGroupIndex(1))),
+            ("localplayer_base".into(), SignatureArea::new("localplayer_base".into(), SignatureAreaType::CaptureGroupIndex(1))),
+            ("playerarray_base".into(), SignatureArea::new("playerarray_base".into(), SignatureAreaType::CaptureGroupIndex(1))),
         ]);
         let result = Self { areas: signature_areas };
         result.check_referenced_signatures(signatures)?;
@@ -75,7 +39,7 @@ impl SignatureAreas {
 }
 
 pub struct Signatures {
-    signatures: HashMap<String, Signature>,
+    pub signatures: HashMap<String, Signature>,
 }
 
 impl Signatures {
@@ -85,6 +49,10 @@ impl Signatures {
             ("on_ground_dec".into(),       Signature::new(ModuleName::Client, "FF 0D ?? ?? ?? ?? E8 ?? ?? ?? ?? 5E 5D")?),
             ("on_ground_inc".into(),       Signature::new(ModuleName::Client, "FF 05 ?? ?? ?? ?? 85 DB 74 0D 8B 13")?),
             ("do_jump_update".into(),      Signature::new(ModuleName::Client, "89 0D ?? ?? ?? ?? 8B 0D ?? ?? ?? ?? F6 C1 03 74 03 83 CE 08")?),
+            ("do_attack_1_read".into(),    Signature::new(ModuleName::Client, "8B 0D ?? ?? ?? ?? F6 C1 03 74 03 83 CE 01 A8 01")?),
+            ("angles_x_read".into(),       Signature::new(ModuleName::Engine, "F3 0F 10 05 ?? ?? ?? ?? F3 0F 11 00 F3 0F 10 05 ?? ?? ?? ?? F3 0F 11 40 04 F3 0F 10 05 ?? ?? ?? ?? F3 0F 11 40 08 5D C2 04 00 B8")?),
+            ("localplayer_base".into(),    Signature::new(ModuleName::Client, "33 C0 39 0D ?? ?? ?? ?? 0F 94 C0 C3")?),
+            ("playerarray_base".into(),    Signature::new(ModuleName::Client, "8B 0D ?? ?? ?? ?? 8B F0 85 C9 74 33 8B 11")?),
             ]);
         Ok(Signatures { signatures })
     }
@@ -167,9 +135,9 @@ impl Signature {
     }
 }
 
-struct SignatureScanner;
+pub struct SignatureScanner;
 impl SignatureScanner {
-    fn scan_signature(signature_area: &SignatureArea, signatures: &Signatures) -> Result<*const [u8]> {
+    pub fn scan_signature(signature_area: &SignatureArea, signatures: &Signatures) -> Result<*const [u8]> {
         let signature_name = &signature_area.signature_name;
         let Some(signature) = signatures.signatures.get(signature_name) else {
             return Err(anyhow!("Signature {} not found", signature_name))
