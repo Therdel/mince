@@ -1,19 +1,136 @@
 <?xml version="1.0" encoding="utf-8"?>
-<CheatTable CheatEngineTableVersion="45">
+<CheatTable CheatEngineTableVersion="42">
   <CheatEntries>
+    <CheatEntry>
+      <ID>1</ID>
+      <Description>"client_s_do_jump"</Description>
+      <LastState Value="4" RealAddress="54285D24"/>
+      <VariableType>4 Bytes</VariableType>
+      <Address>client.dll+4F5D24</Address>
+    </CheatEntry>
     <CheatEntry>
       <ID>0</ID>
       <Description>"client_s_on_ground"</Description>
-      <LastState Value="1" RealAddress="55F182AC"/>
+      <LastState Value="0" RealAddress="542882AC"/>
       <VariableType>4 Bytes</VariableType>
       <Address>client.dll+4F82AC</Address>
     </CheatEntry>
     <CheatEntry>
-      <ID>1</ID>
-      <Description>"client_s_do_jump"</Description>
-      <LastState Value="4" RealAddress="55F15D24"/>
+      <ID>4</ID>
+      <Description>"client_s_pos_x"</Description>
+      <Options moManualExpandCollapse="1" moActivateChildrenAsWell="1" moDeactivateChildrenAsWell="1" moAllowManualCollapseAndExpand="1"/>
+      <LastState Value="-2080" RealAddress="5428CB04"/>
+      <VariableType>Float</VariableType>
+      <Address>client.dll+4FCB04</Address>
+      <CheatEntries>
+        <CheatEntry>
+          <ID>3</ID>
+          <Description>"client_s_pos_y"</Description>
+          <LastState Value="1824" RealAddress="5428CB08"/>
+          <VariableType>Float</VariableType>
+          <Address>client.dll+4FCB08</Address>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>2</ID>
+          <Description>"client_s_pos_z"</Description>
+          <LastState Value="208" RealAddress="5428CB0C"/>
+          <VariableType>Float</VariableType>
+          <Address>client.dll+4FCB0C</Address>
+        </CheatEntry>
+      </CheatEntries>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>19</ID>
+      <Description>"engine_s_viewang_x"</Description>
+      <Options moManualExpandCollapse="1" moActivateChildrenAsWell="1" moDeactivateChildrenAsWell="1" moAllowManualCollapseAndExpand="1"/>
+      <LastState Value="10.99731445" RealAddress="5946C33C"/>
+      <VariableType>Float</VariableType>
+      <Address>engine.dll+47C33C</Address>
+      <CheatEntries>
+        <CheatEntry>
+          <ID>21</ID>
+          <Description>"engine_s_viewang_y"</Description>
+          <LastState Value="59.23278809" RealAddress="5946C340"/>
+          <VariableType>Float</VariableType>
+          <Address>engine.dll+47C340</Address>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>22</ID>
+          <Description>"engine_s_viewang_z"</Description>
+          <LastState Value="0" RealAddress="5946C344"/>
+          <VariableType>Float</VariableType>
+          <Address>engine.dll+47C344</Address>
+        </CheatEntry>
+      </CheatEntries>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>14</ID>
+      <Description>"engine_s_viewang_vis_x"</Description>
+      <Options moManualExpandCollapse="1" moActivateChildrenAsWell="1" moDeactivateChildrenAsWell="1" moAllowManualCollapseAndExpand="1"/>
+      <LastState Value="10.99731445" RealAddress="5429685C"/>
+      <VariableType>Float</VariableType>
+      <Address>client.dll+50685C</Address>
+      <CheatEntries>
+        <CheatEntry>
+          <ID>23</ID>
+          <Description>"engine_s_viewang_vis_y"</Description>
+          <LastState Value="59.23278809" RealAddress="54296860"/>
+          <VariableType>Float</VariableType>
+          <Address>client.dll+506860</Address>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>24</ID>
+          <Description>"engine_s_viewang_vis_z"</Description>
+          <LastState Value="0" RealAddress="54296864"/>
+          <VariableType>Float</VariableType>
+          <Address>client.dll+506864</Address>
+        </CheatEntry>
+      </CheatEntries>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>154</ID>
+      <Description>"client_sp_localplayer"</Description>
+      <LastState Value="36C5CA00" RealAddress="542588E8"/>
+      <ShowAsHex>1</ShowAsHex>
+      <ShowAsSigned>0</ShowAsSigned>
       <VariableType>4 Bytes</VariableType>
-      <Address>client.dll+4F5D24</Address>
+      <Address>client.dll+4C88E8</Address>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>155</ID>
+      <Description>"p_localplayer_punch_x"</Description>
+      <Options moManualExpandCollapse="1" moActivateChildrenAsWell="1" moDeactivateChildrenAsWell="1" moAllowManualCollapseAndExpand="1"/>
+      <LastState Value="0" RealAddress="36C5D848"/>
+      <ShowAsSigned>0</ShowAsSigned>
+      <VariableType>Float</VariableType>
+      <Address>client.dll+4C88E8</Address>
+      <Offsets>
+        <Offset>E48</Offset>
+      </Offsets>
+      <CheatEntries>
+        <CheatEntry>
+          <ID>157</ID>
+          <Description>"p_localplayer_punch_y"</Description>
+          <LastState Value="0" RealAddress="36C5D84C"/>
+          <ShowAsSigned>0</ShowAsSigned>
+          <VariableType>Float</VariableType>
+          <Address>client.dll+4C88E8</Address>
+          <Offsets>
+            <Offset>E4C</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>158</ID>
+          <Description>"p_localplayer_punch_z"</Description>
+          <LastState Value="0" RealAddress="36C5D850"/>
+          <ShowAsSigned>0</ShowAsSigned>
+          <VariableType>Float</VariableType>
+          <Address>client.dll+4C88E8</Address>
+          <Offsets>
+            <Offset>E50</Offset>
+          </Offsets>
+        </CheatEntry>
+      </CheatEntries>
     </CheatEntry>
   </CheatEntries>
   <CheatCodes>
@@ -96,6 +213,138 @@
         <Byte>6C</Byte>
         <Byte>4E</Byte>
         <Byte>F1</Byte>
+      </After>
+    </CodeEntry>
+    <CodeEntry>
+      <Description>engine_s_angles_x update</Description>
+      <AddressString>engine.dll+A5902</AddressString>
+      <Before>
+        <Byte>E8</Byte>
+        <Byte>BE</Byte>
+        <Byte>77</Byte>
+        <Byte>19</Byte>
+        <Byte>00</Byte>
+      </Before>
+      <Actual>
+        <Byte>D9</Byte>
+        <Byte>1D</Byte>
+        <Byte>3C</Byte>
+        <Byte>C3</Byte>
+        <Byte>46</Byte>
+        <Byte>59</Byte>
+      </Actual>
+      <After>
+        <Byte>D9</Byte>
+        <Byte>46</Byte>
+        <Byte>04</Byte>
+        <Byte>D9</Byte>
+        <Byte>1C</Byte>
+      </After>
+    </CodeEntry>
+    <CodeEntry>
+      <Description>engine_s_angles_x read</Description>
+      <AddressString>engine.dll+A5026</AddressString>
+      <Before>
+        <Byte>8B</Byte>
+        <Byte>EC</Byte>
+        <Byte>8B</Byte>
+        <Byte>45</Byte>
+        <Byte>08</Byte>
+      </Before>
+      <Actual>
+        <Byte>F3</Byte>
+        <Byte>0F</Byte>
+        <Byte>10</Byte>
+        <Byte>05</Byte>
+        <Byte>3C</Byte>
+        <Byte>C3</Byte>
+        <Byte>46</Byte>
+        <Byte>59</Byte>
+      </Actual>
+      <After>
+        <Byte>F3</Byte>
+        <Byte>0F</Byte>
+        <Byte>11</Byte>
+        <Byte>00</Byte>
+        <Byte>F3</Byte>
+      </After>
+    </CodeEntry>
+    <CodeEntry>
+      <Description>client angles_visual_x add punch</Description>
+      <AddressString>client.dll+68FD2</AddressString>
+      <Before>
+        <Byte>00</Byte>
+        <Byte>F3</Byte>
+        <Byte>0F</Byte>
+        <Byte>58</Byte>
+        <Byte>03</Byte>
+      </Before>
+      <Actual>
+        <Byte>F3</Byte>
+        <Byte>0F</Byte>
+        <Byte>11</Byte>
+        <Byte>03</Byte>
+      </Actual>
+      <After>
+        <Byte>F3</Byte>
+        <Byte>0F</Byte>
+        <Byte>10</Byte>
+        <Byte>86</Byte>
+        <Byte>4C</Byte>
+      </After>
+    </CodeEntry>
+    <CodeEntry>
+      <Description>client_s_angles_vis update</Description>
+      <AddressString>client.dll+68F97</AddressString>
+      <Before>
+        <Byte>8B</Byte>
+        <Byte>5D</Byte>
+        <Byte>0C</Byte>
+        <Byte>D9</Byte>
+        <Byte>00</Byte>
+      </Before>
+      <Actual>
+        <Byte>D9</Byte>
+        <Byte>1B</Byte>
+      </Actual>
+      <After>
+        <Byte>D9</Byte>
+        <Byte>40</Byte>
+        <Byte>04</Byte>
+        <Byte>D9</Byte>
+        <Byte>5B</Byte>
+      </After>
+    </CodeEntry>
+    <CodeEntry>
+      <Description>localplayer signature</Description>
+      <AddressString>client.dll+A2DC0</AddressString>
+      <Before>
+        <Byte>CC</Byte>
+        <Byte>CC</Byte>
+        <Byte>CC</Byte>
+        <Byte>CC</Byte>
+        <Byte>CC</Byte>
+      </Before>
+      <Actual>
+        <Byte>33</Byte>
+        <Byte>C0</Byte>
+        <Byte>39</Byte>
+        <Byte>0D</Byte>
+        <Byte>E8</Byte>
+        <Byte>88</Byte>
+        <Byte>25</Byte>
+        <Byte>54</Byte>
+        <Byte>0F</Byte>
+        <Byte>94</Byte>
+        <Byte>C0</Byte>
+        <Byte>C3</Byte>
+      </Actual>
+      <After>
+        <Byte>CC</Byte>
+        <Byte>CC</Byte>
+        <Byte>CC</Byte>
+        <Byte>CC</Byte>
+        <Byte>33</Byte>
       </After>
     </CodeEntry>
   </CheatCodes>
