@@ -5,7 +5,8 @@ use anyhow::{anyhow, Result};
 use crate::features::Bunnyhop;
 use crate::gui;
 use crate::StopToken;
-use crate::memory::{MemVars, detour::DetourOrder, hooks::OnGroundHook};
+use crate::memory::{MemVars, detour::DetourOrder};
+use crate::hooks::OnGroundHook;
 use crate::menu::*;
 
 fn fire_detection_thread(stop_token: StopToken) {
@@ -25,7 +26,7 @@ fn fire_detection_thread(stop_token: StopToken) {
                 }
             }
             
-            thread::sleep(Duration::from_millis(20));
+            thread::sleep(Duration::from_millis(10));
         }
         Ok(())
     };

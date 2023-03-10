@@ -1,4 +1,5 @@
-use crate::memory::{MemVars, hooks::OnGroundHandler};
+use crate::memory::MemVars;
+use crate::hooks::OnGroundHandler;
 
 pub struct Bunnyhop {
     is_active: bool,
