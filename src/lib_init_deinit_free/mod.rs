@@ -1,5 +1,4 @@
 use crate::hack_main::hack_main;
-use crate::gui;
 use crate::stop_token::StopToken;
 use std::panic::catch_unwind;
 
@@ -31,7 +30,7 @@ where
     let result = catch_unwind(init);
     if let Err(error) = result {
         let message = format!("Hack init panicked: {error:?}");
-        gui::message_box::warn(&message);
+        gui::message_box::warn(message);
     }
 }
 
@@ -51,7 +50,7 @@ where
     let result = catch_unwind(deinit);
     if let Err(error) = result {
         let message = format!("Hack deinit panicked: {error:?}");
-        gui::message_box::warn(&message);
+        gui::message_box::warn(message);
     }
 }
 

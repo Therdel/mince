@@ -2,7 +2,7 @@ use std::sync::atomic::{AtomicBool, Ordering};
 use std::sync::Arc;
 use std::thread::{JoinHandle, self};
 
-use crate::{StopToken, gui::message_box};
+use crate::StopToken;
 
 #[derive(PartialEq, Clone, Copy)]
 pub enum Command {
@@ -48,7 +48,7 @@ impl Menu {
 
     fn gui_thread(stop_token: StopToken, command: SharedCommand) {
         while !stop_token.stop_requested() {
-            let answer = message_box::yes_no("yes: toggle bhop\nno: leave");
+            let answer = gui::message_box::yes_no("yes: toggle bhop\nno: leave");
             match answer {
                 true => match command.get() {
                     Command::Bhop => command.set(Command::NoBhop),

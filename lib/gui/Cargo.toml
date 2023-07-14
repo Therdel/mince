@@ -1,0 +1,17 @@
+[package]
+name = "gui"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+
+
+[target.'cfg(target_os = "windows")'.dependencies.windows]
+version = "0.33"
+features = [
+    "Win32_Foundation",
+
+    # MessageBox + literal strings
+    "alloc",
+    "Win32_UI_WindowsAndMessaging",
+]

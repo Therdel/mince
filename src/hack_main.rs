@@ -3,7 +3,6 @@ use std::{ thread, time::Duration };
 use anyhow::{anyhow, Result};
 
 use crate::features::Bunnyhop;
-use crate::gui;
 use crate::StopToken;
 use crate::memory::{MemVars, detour::DetourOrder};
 use crate::hooks::OnGroundHook;
@@ -65,6 +64,6 @@ fn run(stop_token: StopToken) -> Result<()> {
 
 pub fn hack_main(stop_token: StopToken) {
     if let Err(err) = run(stop_token) {
-        gui::message_box::warn(&err.to_string());
+        gui::message_box::warn(err.to_string());
     }
 }

@@ -8,6 +8,7 @@ crate-type = ["cdylib"]
 
 [dependencies]
 module_maps = { path = "lib/module_maps" }
+gui = { path = "lib/gui" }
 keystone = { path = "lib/keystone/bindings/rust" }
 region = "3.0.0"
 regex = "1"

@@ -1,14 +1,14 @@
 pub mod message_box {
-    pub fn info(message: &str) {
-        message_box(Type::Info, message);
+    pub fn info(message: impl AsRef<str>) {
+        message_box(Type::Info, message.as_ref());
     }
 
-    pub fn warn(message: &str) {
-        message_box(Type::Warn, message);
+    pub fn warn(message: impl AsRef<str>) {
+        message_box(Type::Warn, message.as_ref());
     }
 
-    pub fn yes_no(message: &str) -> bool {
-        message_box(Type::YesNo, message)
+    pub fn yes_no(message: impl AsRef<str>) -> bool {
+        message_box(Type::YesNo, message.as_ref())
     }
 
     enum Type {

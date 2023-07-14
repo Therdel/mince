@@ -5,10 +5,16 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Attach",
+            "type": "lldb",
+            "name": "Attach hl2.exe",
             "request": "attach",
             "program": "hl2.exe",
+        },
+        {
             "type": "lldb",
+            "request": "attach",
+            "name": "Attach (pick)",
+            "pid": "${command:pickMyProcess}" // use ${command:pickProcess} to pick other users' processes
         }
     ]
 }
