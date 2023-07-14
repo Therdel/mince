@@ -1,8 +1,9 @@
 pub mod localplayer {
     use std::mem::size_of;
     use nalgebra_glm as glm;
+    use crate::memory::overlay_structs;
 
-    pub type Team = u32;
+    pub type Team = overlay_structs::Team;
     pub type Punch = glm::Vec3;
     pub type EyeHeight = f32;
     pub type Pos = glm::Vec3;

@@ -44,10 +44,10 @@ impl DetourToMethod {
             .map_err(|err| anyhow!("Could not set option to nasm syntax: {err}"))?;
 
         let old_patched_code = patch_region.to_vec();
-        let jmp_back_target_address = patch_region.as_ptr_range().start as u32 + patch_region.len() as u32;
+        let jmp_back_target_address = patch_region.as_ptr_range().start as usize + patch_region.len();
 
-        let instance_address = instance as *const _ as u32;
-        let method_address = method as u32;
+        let instance_address = instance as *const _ as usize;
+        let method_address = method as usize;
         let trampoline = Self::build_trampoline(&keystone, instance_address, method_address, order, old_patched_code.as_slice(), jmp_back_target_address)?;
         let trampoline_slice = &trampoline[..];
         let trampoline_mem_protection_guard = unsafe {
@@ -57,8 +57,8 @@ impl DetourToMethod {
         };
 
         // assemble detour jmp
-        let address_of_detour_jmp_instruction = patch_region.as_ptr() as u32;
-        let address_of_trampoline = trampoline_slice.as_ptr() as u32;
+        let address_of_detour_jmp_instruction = patch_region.as_ptr() as usize;
+        let address_of_trampoline = trampoline_slice.as_ptr() as usize;
         let detour_jmp_code =
             Self::assemble_relative_jump(&keystone, address_of_detour_jmp_instruction, address_of_trampoline)?;
 
@@ -76,9 +76,9 @@ impl DetourToMethod {
         Ok(Self {patch_region, old_patched_code, trampoline, patch_region_mem_protection_guard, trampoline_mem_protection_guard})
     }
 
-    fn build_trampoline(keystone: &Keystone, instance_address: u32, method_address: u32,
+    fn build_trampoline(keystone: &Keystone, instance_address: usize, method_address: usize,
                         order: DetourOrder, old_code: &[u8],
-                        jmp_back_target_address: u32) -> Result<Vec<u8>> {
+                        jmp_back_target_address: usize) -> Result<Vec<u8>> {
         let asm = format!(
             "push eax
             push ebx
@@ -124,7 +124,7 @@ impl DetourToMethod {
 
         // jump back to the instruction after the detour that calls the trampoline
         let address_of_jmp_back_instruction =
-            trampoline.as_ptr() as u32 + method_calling_code.len() as u32 + old_code.len() as u32;
+            trampoline.as_ptr() as usize + method_calling_code.len() + old_code.len();
         let jmp_back_code =
             Self::assemble_relative_jump(keystone, address_of_jmp_back_instruction, jmp_back_target_address)?;
         trampoline.extend_from_slice(jmp_back_code.as_slice());
@@ -132,7 +132,7 @@ impl DetourToMethod {
         Ok(trampoline)
     }
 
-    fn assemble_relative_jump(keystone: &Keystone, address_jmp_instruction: u32, address_target: u32) -> Result<Vec<u8>> {
+    fn assemble_relative_jump(keystone: &Keystone, address_jmp_instruction: usize, address_target: usize) -> Result<Vec<u8>> {
         let asm = format!("jmp {address_target:#x}");
         let jmp_code = keystone.asm(asm, address_jmp_instruction as _)
             .map_err(|err| anyhow!("Could not assemble jmp: {err}"))?
