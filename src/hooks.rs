@@ -30,4 +30,20 @@ impl OnGroundHook {
     }
 }
 
+pub trait ViewAnglesReadHandler {
+    fn on_view_angles_read(&self);
+}
+
+pub struct ViewAnglesReadHook {
+    #[allow(unused)] detour_on_view_angles_read: DetourToMethod
+}
+
+impl ViewAnglesReadHook {
+    pub fn install<T: ViewAnglesReadHandler>(mem_vars: &MemVars, instance: &T, order: DetourOrder) -> Result<Self> {
+        unsafe {
+            let detour_on_view_angles_read =
+                DetourToMethod::install(mem_vars.angles_op_read(), instance, T::on_view_angles_read, order)?;
+            Ok(Self { detour_on_view_angles_read })
+        }
+    }
 }
