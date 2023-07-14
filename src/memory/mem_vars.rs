@@ -1,8 +1,10 @@
 use anyhow::{anyhow, Result, Context};
 use lazy_static::lazy_static;
+use nalgebra_glm as glm;
 
 use super::signatures::{SignatureScanner, Signatures, SignatureAreas};
-use super::overlay_structs::{Localplayer, PlayerArray};
+use super::overlay_structs::{Localplayer, Player, RadarStruct};
+
 
 #[derive(Clone, Copy)]
 pub struct MemVars {
@@ -12,32 +14,93 @@ pub struct MemVars {
     on_ground:          usize,
     do_jump:            usize,
     do_attack_1:        usize,
-    angles_x_op_read:   (usize, usize),
+    eye_pos:            usize,
+    angles_op_read:     (usize, usize),
     angles:             usize,
     localplayer_base:   usize,
-    player_array_base:  usize,
+    radar_struct_base:  usize,
 }
 
 impl MemVars {
-    pub fn on_ground_op_dec(&self)  -> &'static mut [u8] { unsafe { std::slice::from_raw_parts_mut(self.on_ground_op_dec.0 as _, self.on_ground_op_dec.1) } }
-    pub fn on_ground_op_inc(&self)  -> &'static mut [u8] { unsafe { std::slice::from_raw_parts_mut(self.on_ground_op_inc.0 as _, self.on_ground_op_inc.1) } }
-    pub fn on_ground(&self)         -> &'static mut u8 { unsafe { &mut *(self.on_ground as *mut _ )} }
-    pub fn do_jump(&self)           -> &'static mut u8 { unsafe { &mut *(self.do_jump as *mut _) } }
-    pub fn do_attack_1(&self)       -> &'static mut u8 { unsafe { &mut *(self.do_attack_1 as *mut _) } }
-    pub fn angles_x_op_read(&self)  -> &'static mut [u8] { unsafe { std::slice::from_raw_parts_mut(self.angles_x_op_read.0 as _, self.angles_x_op_read.1) } }
-    pub fn angles(&self)            -> &'static mut [f32; 3] { unsafe { &mut *(self.angles as *mut _) } }
-    pub fn localplayer(&self)       -> &'static Option<&'static mut Localplayer> { unsafe { &*(self.localplayer_base as *const _ ) } }
-    pub fn player_array(&self)      -> &'static PlayerArray { unsafe { &*(self.player_array_base as *const _ ) }}
-
     pub fn get() -> Result<Self> {
         lazy_static! {
             static ref VARS: Result<MemVars> = MemVars::read();
         }       
+        #[allow(clippy::let_and_return)]
         let mem_vars = match &*VARS {
             Ok(mem_vars) => Ok(*mem_vars),
             Err(err) => Err(anyhow!("Failed to read MemVars: {err}")),
         };
         mem_vars
+    }
+    
+    pub fn on_ground_op_dec(&self)  -> &'static mut [u8] {
+        let slice = unsafe { std::slice::from_raw_parts_mut(self.on_ground_op_dec.0 as _, self.on_ground_op_dec.1) };
+        slice
+    }
+    
+    pub fn on_ground_op_inc(&self)  -> &'static mut [u8] {
+        let slice = unsafe { std::slice::from_raw_parts_mut(self.on_ground_op_inc.0 as _, self.on_ground_op_inc.1) };
+        slice
+    }
+    
+    pub fn on_ground(&self)         -> &'static mut u8 {
+        #[allow(clippy::let_and_return)]
+        let reference = unsafe { &mut *(self.on_ground as *mut _ )};
+        reference
+    }
+    
+    pub fn do_jump(&self)           -> &'static mut u8 {
+        #[allow(clippy::let_and_return)]
+        let reference = unsafe { &mut *(self.do_jump as *mut _) };
+        reference
+    }
+    
+    pub fn do_attack_1(&self)       -> &'static mut u8 {
+        #[allow(clippy::let_and_return)]
+        let reference = unsafe { &mut *(self.do_attack_1 as *mut _) };
+        reference
+    }
+    
+    pub fn eye_pos(&self)            -> &'static mut glm::Vec3 {
+        #[allow(clippy::let_and_return)]
+        let reference = unsafe { &mut *(self.eye_pos as *mut _) };
+        reference
+    }
+    
+    pub fn angles_op_read(&self)  -> &'static mut [u8] {
+        let slice = unsafe { std::slice::from_raw_parts_mut(self.angles_op_read.0 as _, self.angles_op_read.1) };
+        slice
+    }
+    
+    pub fn angles(&self)            -> &'static mut glm::Vec3 {
+        #[allow(clippy::let_and_return)]
+        let reference = unsafe { &mut *(self.angles as *mut _) };
+        reference
+    }
+    
+    pub fn localplayer(&self)       -> &'static Option<&'static mut Localplayer> {
+        #[allow(clippy::let_and_return)]
+        let reference = unsafe { &*(self.localplayer_base as *const _ ) };
+        reference
+    }
+    
+    pub fn radar_struct(&self)      -> &'static mut &'static mut RadarStruct {
+        #[allow(clippy::let_and_return)]
+        let reference = unsafe { &mut *(self.radar_struct_base as *mut _ ) };
+        reference
+    }
+    
+    // TODO: Is this a good place? Rest is just data, this is an operation on it
+    pub fn poll_crosshair_player(&self) -> Option<&'static Player> {
+        let Some(localplayer) = self.localplayer() else { return None };
+        let is_aiming_at_object = localplayer.target_id > 0;
+        if is_aiming_at_object {
+            let player_array_index = localplayer.target_id - 1;
+            self.radar_struct().players.get(player_array_index as usize)
+        } else {
+            None
+        }
     }
 
     fn read() -> Result<Self> {
@@ -70,10 +133,11 @@ impl MemVars {
             on_ground:          read_address("on_ground")?,
             do_jump:            read_address("do_jump")?,
             do_attack_1:        read_address("do_attack_1")?,
-            angles_x_op_read:   read_slice_parts("angles_x_op_read")?,
+            eye_pos:            read_address("eye_pos")? as _,
+            angles_op_read:     read_slice_parts("angles_op_read")?,
             angles:             read_address("angles")? as _,
             localplayer_base:   read_address("localplayer_base")? as _,
-            player_array_base:  read_address("playerarray_base")? as _,
+            radar_struct_base:  read_address("radar_struct_base")? as _,
         };
         Ok(mem_vars)
     }

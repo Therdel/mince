@@ -1,20 +1,23 @@
-use std::mem::size_of;
+pub mod localplayer {
+    use std::mem::size_of;
+    use nalgebra_glm as glm;
 
-/// source: https://stackoverflow.com/a/70224634
-fn _size_of_return_type<F, T, U>(_f: F) -> usize
-where
-    F: FnOnce(T) -> U
-{
-    std::mem::size_of::<U>()
+    pub type Team = u32;
+    pub type Punch = glm::Vec3;
+    pub type EyeHeight = f32;
+    pub type Pos = glm::Vec3;
+    
+    pub const TEAM: usize = 0x9C;
+    pub const PADDING_TEAM_EYE_HEIGHT: usize = EYE_HEIGHT - (TEAM + size_of::<Team>());
+    pub const EYE_HEIGHT: usize = 0xF0;
+    pub const PADDING_EYE_HEIGHT_POS: usize = POS - (EYE_HEIGHT + size_of::<EyeHeight>());
+    pub const POS: usize = 0x260;
+    pub const PADDING_POS_PUNCH: usize = PUNCH - (POS + size_of::<Pos>());
+    pub const PUNCH: usize = 0xE48;
+    pub const PADDING_PUNCH_TARGET: usize = TARGET_ID - (PUNCH + size_of::<Punch>());
+    pub const TARGET_ID: usize = 0x14F0;
 }
 
-pub type LocalplayerTeam = u32;
-pub type LocalplayerPunch = [f32; 3];
-// pub type LocalplayerTargetId = u32;
-
-pub const LOCALPLAYER_TEAM: usize = 0x9C;
-pub const LOCALPLAYER_PADDING_TEAM_PUNCH: usize = LOCALPLAYER_PUNCH_X - (LOCALPLAYER_TEAM + size_of::<LocalplayerTeam>());
-pub const LOCALPLAYER_PUNCH_X: usize = 0xE48;
-pub const LOCALPLAYER_PADDING_PUNCH_TARGET: usize = LOCALPLAYER_TARGET_ID - (LOCALPLAYER_PUNCH_X + size_of::<LocalplayerPunch>());
-pub const LOCALPLAYER_TARGET_ID: usize = 0x14F0;
-pub const PLAYERARRAY_PLAYERARRAY: usize = 0x28;
+pub mod radar_struct {
+    pub const PLAYERARRAY: usize = 0x28;
+}

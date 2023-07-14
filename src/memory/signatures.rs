@@ -18,10 +18,11 @@ impl SignatureAreas {
             ("on_ground".into(),        SignatureArea::new("on_ground_dec".into(), SignatureAreaType::CaptureGroupIndex(1))),
             ("do_jump".into(),          SignatureArea::new("do_jump_update".into(), SignatureAreaType::CaptureGroupIndex(1))),
             ("do_attack_1".into(),      SignatureArea::new("do_attack_1_read".into(), SignatureAreaType::CaptureGroupIndex(1))),
-            ("angles_x_op_read".into(), SignatureArea::new("angles_x_read".into(), SignatureAreaType::Range(0..8))),
-            ("angles".into(),           SignatureArea::new("angles_x_read".into(), SignatureAreaType::CaptureGroupIndex(1))),
+            ("eye_pos".into(),          SignatureArea::new("eye_pos_update".into(), SignatureAreaType::CaptureGroupIndex(1))),
+            ("angles_op_read".into(),   SignatureArea::new("angles_read".into(), SignatureAreaType::CaptureGroupIndex(0))),
+            ("angles".into(),           SignatureArea::new("angles_read".into(), SignatureAreaType::CaptureGroupIndex(1))),
             ("localplayer_base".into(), SignatureArea::new("localplayer_base".into(), SignatureAreaType::CaptureGroupIndex(1))),
-            ("playerarray_base".into(), SignatureArea::new("playerarray_base".into(), SignatureAreaType::CaptureGroupIndex(1))),
+            ("radar_struct_base".into(), SignatureArea::new("radar_struct_base".into(), SignatureAreaType::CaptureGroupIndex(1))),
         ]);
         let result = Self { areas: signature_areas };
         result.check_referenced_signatures(signatures)?;
@@ -50,9 +51,10 @@ impl Signatures {
             ("on_ground_inc".into(),       Signature::new(ModuleName::Client, "FF 05 ?? ?? ?? ?? 85 DB 74 0D 8B 13")?),
             ("do_jump_update".into(),      Signature::new(ModuleName::Client, "89 0D ?? ?? ?? ?? 8B 0D ?? ?? ?? ?? F6 C1 03 74 03 83 CE 08")?),
             ("do_attack_1_read".into(),    Signature::new(ModuleName::Client, "8B 0D ?? ?? ?? ?? F6 C1 03 74 03 83 CE 01 A8 01")?),
-            ("angles_x_read".into(),       Signature::new(ModuleName::Engine, "F3 0F 10 05 ?? ?? ?? ?? F3 0F 11 00 F3 0F 10 05 ?? ?? ?? ?? F3 0F 11 40 04 F3 0F 10 05 ?? ?? ?? ?? F3 0F 11 40 08 5D C2 04 00 B8")?),
+            ("eye_pos_update".into(),      Signature::new(ModuleName::Engine, "F3 0F 11 05 ?? ?? ?? ?? F3 0F 10 40 04 F3 0F 11 05 ?? ?? ?? ?? F3 0F 10 40 08 F3 0F 11 05 ?? ?? ?? ?? E8")?),
+            ("angles_read".into(),         Signature::new(ModuleName::Engine, "F3 0F 10 05 ?? ?? ?? ?? F3 0F 11 00 F3 0F 10 05 ?? ?? ?? ?? F3 0F 11 40 04 F3 0F 10 05 ?? ?? ?? ?? F3 0F 11 40 08 5D C2 04 00 B8 ?? ?? ?? ??")?),
             ("localplayer_base".into(),    Signature::new(ModuleName::Client, "33 C0 39 0D ?? ?? ?? ?? 0F 94 C0 C3")?),
-            ("playerarray_base".into(),    Signature::new(ModuleName::Client, "8B 0D ?? ?? ?? ?? 8B F0 85 C9 74 33 8B 11")?),
+            ("radar_struct_base".into(),   Signature::new(ModuleName::Client, "8B 0D ?? ?? ?? ?? 8B F0 85 C9 74 33 8B 11")?),
             ]);
         Ok(Signatures { signatures })
     }
@@ -67,7 +69,7 @@ pub enum SignatureAreaType {
 
 pub struct SignatureArea {
     signature_name: String,
-    /// region of the signature pattern this signature is "interested in".
+    /// region of the signature pattern's code region we're "interested in" (addresses, offsets, values...)
     area: SignatureAreaType,
 }
 

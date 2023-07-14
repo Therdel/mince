@@ -1,6 +1,11 @@
 use anyhow::Result;
 use crate::memory::{MemVars, detour::{DetourOrder, DetourToMethod}};
 
+pub trait OnGroundHandler {
+    fn on_ground_land(&self);
+    fn on_ground_leave(&self);
+}
+
 pub struct OnGroundHook {
     /// holds detour alive
     #[allow(unused)] detour_on_ground_op_dec: DetourToMethod,
@@ -25,7 +30,4 @@ impl OnGroundHook {
     }
 }
 
-pub trait OnGroundHandler {
-    fn on_ground_land(&self);
-    fn on_ground_leave(&self);
 }
