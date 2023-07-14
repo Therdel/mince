@@ -1,4 +1,3 @@
-pub mod aimbot;
 pub mod hooks;
 mod module_name;
 pub use module_name::*;

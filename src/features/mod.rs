@@ -1,2 +1,2 @@
-mod bunnyhop;
-pub use bunnyhop::*;
+pub mod bunnyhop;
+pub mod aimbot;
