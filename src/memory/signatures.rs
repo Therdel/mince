@@ -3,7 +3,7 @@ use std::{collections::HashMap, ops::Range};
 use anyhow::{anyhow, Result, Context};
 use region::Region;
 
-use crate::ModuleName;
+use crate::{ModuleName, module_maps};
     
 pub struct SignatureAreas {
     pub areas: HashMap<String, SignatureArea>,

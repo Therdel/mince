@@ -2,7 +2,7 @@ use std::sync::atomic::{AtomicBool, Ordering};
 use std::sync::Arc;
 use std::thread::{JoinHandle, self};
 
-use crate::StopToken;
+use crate::{gui, StopToken};
 
 #[derive(PartialEq, Clone, Copy)]
 pub enum Command {

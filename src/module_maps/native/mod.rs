@@ -7,4 +7,3 @@ mod linux;
 pub use self::windows::*;
 #[cfg(target_os="linux")]
 pub use self::linux::*;
-

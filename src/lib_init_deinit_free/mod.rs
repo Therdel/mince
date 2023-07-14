@@ -1,3 +1,4 @@
+use crate::gui;
 use crate::hack_main::hack_main;
 use crate::stop_token::StopToken;
 use std::panic::catch_unwind;

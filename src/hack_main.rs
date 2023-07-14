@@ -3,6 +3,7 @@ use std::{ thread, time::Duration };
 use anyhow::Result;
 
 use crate::features::{aimbot::{Aimbot, AimbotConfig, AimPoint, TargetSelect}, bunnyhop::Bunnyhop};
+use crate::gui;
 use crate::StopToken;
 use crate::memory::{MemVars, detour::DetourOrder};
 use crate::hooks::{OnGroundHook, ViewAnglesReadHook};
